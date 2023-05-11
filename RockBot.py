@@ -1,36 +1,47 @@
+from telegram import Update, Bot
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from telegram.update import Update
-from telegram.ext.callbackcontext import CallbackContext
 
 TOKEN = "You will never know my token!"
 
-def start(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "Wow, new user! I'm here to don't give a shit about your problems.\n\nType /help to see the allowed commands, you idiot!")
+def start(update: Update, context):
+    message = "Wow, new user!\nI'm here to don't give a shit about your problems.\nType /help to see the available commands."
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
-def help(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "/start - start bot\n/info - send the bot creator's info\n")
+def help(update: Update, context):
+    message = "/start - Start the bot\n/info - Get the bot creator's information"
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
-def info_url(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "Linkedin: https://www.linkedin.com/in/mohammadfazel-abdhaghighi-33912a234\n\nGitHub: https://github.com/FazelHaghighi")
+def info_url(update: Update, context):
+    linkedin_text = "LinkedIn Profile"
+    linkedin_link = "https://www.linkedin.com/in/mohammadfazel-abdhaghighi-33912a234"
+    
+    github_text = "GitHub Profile"
+    github_link = "https://github.com/FazelHaghighi"
+    
+    message = f"{linkedin_text}: {linkedin_link}\n\n{github_text}: {github_link}"
+    
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message, disable_web_page_preview=True)
 
-def unknown_text(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "'%s' is not even a command you dumb cunt!" % update.message.text)
+def unknown_text(update: Update, context):
+    message = "'{}' is not even a command, you dumb cunt!".format(update.message.text)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
-def unknown(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "WTF man? Are you a fuckin dumb? I told you what commands I understand. What the fuck is '%s' ?" % update.message.text)
+def unknown(update: Update, context):
+    message = "WTF man? Are you a fuckin dumb?\nI told you what commands I understand.\nWhat the fuck is '{}' ?".format(update.message.text)
+    context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 
-updater = Updater(TOKEN, use_context=True)
-dispatcher = updater.dispatcher
+def main():
+    bot = Bot(token=TOKEN)
+    updater = Updater(bot=bot)
 
-dispatcher.add_handler(CommandHandler('start', start))
-dispatcher.add_handler(CommandHandler('info', info_url))
-dispatcher.add_handler(CommandHandler('help', help))
-dispatcher.add_handler(MessageHandler(Filters.command, unknown))
-dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
+    dispatcher = updater.dispatcher
+    dispatcher.add_handler(CommandHandler('start', start))
+    dispatcher.add_handler(CommandHandler('info', info_url))
+    dispatcher.add_handler(CommandHandler('help', help))
+    dispatcher.add_handler(MessageHandler(Filters.command, unknown))
+    dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
 
-updater.start_polling()
+    updater.start_polling()
+
+if __name__ == "__main__":
+    main()
