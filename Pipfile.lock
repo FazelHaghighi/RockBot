@@ -123,7 +123,7 @@
                 "sha256:fba85b6cd9c39be262fcd23865652920832b61583de2a2ca907dbd8e8a8c81e5"
             ],
             "markers": "python_version >= '3.5'",
-            "version": "==6.1"
+            "version": "==6.3.2"
         },
         "tzdata": {
             "hashes": [
